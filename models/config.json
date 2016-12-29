@@ -1,0 +1,16 @@
+{
+
+  "qa": {
+    "username": "myUserAdmin",
+    "password": "abc123",
+    "database": "doughnut_qa",
+    "host": "127.0.0.1",
+    "port": 27017
+  },
+  "clientuat": {
+
+  },
+  "production": {
+    
+  }
+}

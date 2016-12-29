@@ -1,0 +1,57 @@
+doctype html
+html
+  head
+    title Doughnuts | Security
+    meta(name = 'viewport', content = 'width=device-width, initial-scale=1')
+    link(rel="stylesheet", href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css")
+    base(href="/")
+  body(layout='column', style="background: #e74c3c;", ng-app="Doughnuts-ForgotPass")
+    div(style="height:50px;")
+    div(style="margin: 0 auto; width: 100%;")
+      img(src="/images/donut.png", style="margin:0 auto;width: 100px; display:block;")
+      p(style="font-size:30px;margin:0 auto; display:block;text-align:center;color: #ffffff;") Doughnuts
+      br
+      br
+      br
+      p(style="font-size:30px; margin: 0 auto; display: block; text-align:center;color:#ffffff;") No sweat, bro!
+      p(style="font-size:30px; margin: 0 auto; display: block; text-align:center;color:#ffffff;") Just put in your email address and all will be good
+      br
+
+
+    md-container.md-padding(layout-align = "center center", ng-controller="ChangePassCtrl", style="background: #e74c3c;")
+      md-card.md-raised.md-padding(style="margin: 0 auto;max-width: 400px;")
+        form.md-padding(layout='column', name="sendemail")
+          md-input-container
+            label email
+            input(name='email', type='email', required='', ng-model='user.email', ng-pattern="/^.+@.+\..+$/")
+            div(ng-messages='sendemail.email.$error')
+              div(ng-message="required")
+                | Please input thy email, bro!
+              div(ng-message="pattern")
+                | Don't try to bluff me! Input a valid email address!
+
+
+        br
+
+        md-button.md-raised.md-primary(flex, ng-click="forgotPass(user)", ng-disabled="sendemail.$invalid") Send me a mail
+
+    script(src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js")
+    script(src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.min.js")
+    script(src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-aria.min.js")
+    script(src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-messages.min.js")
+    script(src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js")
+    script(src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-route.js")
+
+
+    script.
+      angular.module('Doughnuts-ForgotPass', ['ngMaterial', 'ngMessages'])
+             .controller('ChangePassCtrl', ['$scope', '$http', function($scope, $http){
+                  $scope.forgotPass = function(user){
+
+                    $http.post('/api/user/forgot-pass/' + encodeURIComponent(user.email), {
+                    }).success(function(response){
+                      console.log(response);
+                    });
+                  }
+
+             }]);
