@@ -9,12 +9,28 @@ var nodeUtils = require('util');
 var app = express();
 var codes = require('./codes.json');
 var cron = require('node-cron');
+var firebase = require("firebase");
+var http = require('http');
+var config = {
+    apiKey: "AIzaSyAQJaibXA510_Vb4qaDiXl8Me7fT5_9I_c",
+    authDomain: "ics-live.firebaseapp.com",
+    databaseURL: "https://ics-live.firebaseio.com",
+    storageBucket: "ics-live.appspot.com",
+    messagingSenderId: "573085776272"
+  };
+firebase.initializeApp(config);
+var database = firebase.database();
+var masterData = '/tournaments';
 
+var userEmail = "rogercores2@gmail.com";
+var userPassword = "password12345678910";
 
-
-
-
-
+firebase.auth().signInWithEmailAndPassword(userEmail, userPassword).catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  console.log(errorCode + ": " + errorMessage);
+});
 
 
 // uncomment after placing your favicon in /public
@@ -68,10 +84,64 @@ app.use(function(err, req, res, next) {
   });
 });
 
+var parsePgn = function(pgn){
+  while(pgn.includes('{')){
+    var open = pgn.indexOf('{');
+    var close = pgn.indexOf('}');
+    var result = pgn.split('');
+    pgn = pgn.replace(pgn.substring(open, close+1), "");
+    console.log(pgn);
+  }
+  return pgn;
+}
+
+var updatePgn = function(tournamentKey, roundKey, pgnUrl){
+  http.get(pgnUrl, function(response) {
+      // Continuously update stream with data
+      var body = '';
+      response.on('data', function(d) {
+          body += d;
+      });
+      response.on('end', function() {
+          // while(body.includes('{'))
+          //     body = body.replace(/{.*}/, '');
+
+          console.log(body);
+          body = parsePgn(body);
+          firebase.database().ref(masterData + '/' + tournamentKey + '/rounds/' + roundKey + '/' + 'pgn').set(body);
+
+      });
+  });
+}
+
+
+
 
 cron.schedule('* * * * *', function(){
-  console.log('running a task every minute');
+  console.log('uploading the data at ' + Date.now());
+  database.ref(masterData).once('value').then(function(snapshot) {
+    for(var tournamentKey in snapshot.val()){
+      var tournament = snapshot.val()[tournamentKey];
+      for(var roundKey in tournament.rounds){
+        var round = tournament.rounds[roundKey];
+        if(round.publish === true){
+          var pgnUrl = tournament.base_url + '/' + tournament.tournamentAddress + '/' + round.roundAddress + '/games.pgn';
+          console.log(pgnUrl);
+          updatePgn(tournamentKey, roundKey, pgnUrl);
+
+
+        } else continue;
+
+      }
+
+
+    }
+  });
+
+
 });
+
+
 
 
 
