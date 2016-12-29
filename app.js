@@ -90,7 +90,7 @@ var parsePgn = function(pgn){
     var close = pgn.indexOf('}');
     var result = pgn.split('');
     pgn = pgn.replace(pgn.substring(open, close+1), "");
-    console.log(pgn);
+    //console.log(pgn);
   }
   return pgn;
 }
