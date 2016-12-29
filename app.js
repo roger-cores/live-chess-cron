@@ -114,7 +114,7 @@ var updatePgn = function(tournamentKey, roundKey, pgnUrl){
 }
 
 
-
+ 
 
 cron.schedule('* * * * *', function(){
   console.log('uploading the data at ' + Date.now());
