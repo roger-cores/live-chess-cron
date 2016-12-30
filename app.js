@@ -123,6 +123,7 @@ var updatePgn = function(tournamentKey, roundKey, pgnUrl){
       response.on('end', function() {
           // while(body.includes('{'))
           //     body = body.replace(/{.*}/, '');
+          console.log(body.replace(/\s*{.*?}\s*/g, ' '));
 
           body = parsePgn(body);
           firebase.database().ref(masterData + '/' + tournamentKey + '/rounds/' + roundKey + '/' + 'pgn').set(body);
@@ -134,30 +135,32 @@ var updatePgn = function(tournamentKey, roundKey, pgnUrl){
 
 
 
-cron.schedule('*/15 * * * * *', function(){
-  console.log('uploading the data at ' + Date.now());
-  database.ref(masterData).once('value').then(function(snapshot) {
-    for(var tournamentKey in snapshot.val()){
-      var tournament = snapshot.val()[tournamentKey];
-      for(var roundKey in tournament.rounds){
-        var round = tournament.rounds[roundKey];
-        if(round.publish === true){
-          var pgnUrl = tournament.base_url + '/' + tournament.tournamentAddress + '/' + round.roundAddress + '/games.pgn';
-          console.log(pgnUrl);
-          updatePgn(tournamentKey, roundKey, pgnUrl);
+// cron.schedule('*/15 * * * * *', function(){
+//   console.log('uploading the data at ' + Date.now());
+//   database.ref(masterData).once('value').then(function(snapshot) {
+//     for(var tournamentKey in snapshot.val()){
+//       var tournament = snapshot.val()[tournamentKey];
+//       for(var roundKey in tournament.rounds){
+//         var round = tournament.rounds[roundKey];
+//         if(round.publish === true){
+//           var pgnUrl = tournament.base_url + '/' + tournament.tournamentAddress + '/' + round.roundAddress + '/games.pgn';
+//           console.log(pgnUrl);
+//           updatePgn(tournamentKey, roundKey, pgnUrl);
+//
+//
+//         } else continue;
+//
+//       }
+//
+//
+//     }
+//   });
+//
+//
+// });
 
 
-        } else continue;
-
-      }
-
-
-    }
-  });
-
-
-});
-
+var str = "Hello, this is Mike {example} and this is Ranon {other example} but then another one";
 
 
 
