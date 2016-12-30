@@ -108,7 +108,7 @@ var parsePgn = function(pgn){
     var result = pgn.split('');
     pgn = pgn.replace(pgn.substring(open, close+1), "");
     //console.log(pgn);
-    console.log("here in while");
+    //console.log("here in while");
   }
   return pgn;
 }
