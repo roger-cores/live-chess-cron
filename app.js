@@ -102,7 +102,7 @@ app.use(function(err, req, res, next) {
 });
 
 var parsePgn = function(pgn){
-  while(pgn.includes('{')){
+  while(pgn.includes('{') && pgn.includes('}')){
     var open = pgn.indexOf('{');
     var close = pgn.indexOf('}');
     var result = pgn.split('');
