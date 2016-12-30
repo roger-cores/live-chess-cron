@@ -43,9 +43,26 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'node_modules')));
 
 
-app.post('/', function(req, res, next){
+app.get('/', function(req, res, next){
+  database.ref(masterData).once('value').then(function(snapshot) {
+    for(var tournamentKey in snapshot.val()){
+      var tournament = snapshot.val()[tournamentKey];
+      for(var roundKey in tournament.rounds){
+        var round = tournament.rounds[roundKey];
+        if(round.publish === true){
+          var pgnUrl = tournament.base_url + '/' + tournament.tournamentAddress + '/' + round.roundAddress + '/games.pgn';
+          console.log(pgnUrl);
+          updatePgn(tournamentKey, roundKey, pgnUrl);
 
 
+        } else continue;
+
+      }
+
+
+    }
+  });
+  res.json({msg: "updated"});
 });
 
 
@@ -114,31 +131,31 @@ var updatePgn = function(tournamentKey, roundKey, pgnUrl){
 }
 
 
- 
-
-cron.schedule('* * * * *', function(){
-  console.log('uploading the data at ' + Date.now());
-  database.ref(masterData).once('value').then(function(snapshot) {
-    for(var tournamentKey in snapshot.val()){
-      var tournament = snapshot.val()[tournamentKey];
-      for(var roundKey in tournament.rounds){
-        var round = tournament.rounds[roundKey];
-        if(round.publish === true){
-          var pgnUrl = tournament.base_url + '/' + tournament.tournamentAddress + '/' + round.roundAddress + '/games.pgn';
-          console.log(pgnUrl);
-          updatePgn(tournamentKey, roundKey, pgnUrl);
 
 
-        } else continue;
-
-      }
-
-
-    }
-  });
-
-
-});
+// cron.schedule('* * * * *', function(){
+//   console.log('uploading the data at ' + Date.now());
+//   database.ref(masterData).once('value').then(function(snapshot) {
+//     for(var tournamentKey in snapshot.val()){
+//       var tournament = snapshot.val()[tournamentKey];
+//       for(var roundKey in tournament.rounds){
+//         var round = tournament.rounds[roundKey];
+//         if(round.publish === true){
+//           var pgnUrl = tournament.base_url + '/' + tournament.tournamentAddress + '/' + round.roundAddress + '/games.pgn';
+//           console.log(pgnUrl);
+//           updatePgn(tournamentKey, roundKey, pgnUrl);
+//
+//
+//         } else continue;
+//
+//       }
+//
+//
+//     }
+//   });
+//
+//
+// });
 
 
 
