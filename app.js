@@ -132,7 +132,7 @@ var updatePgn = function(tournamentKey, roundKey, pgnUrl){
 
 
 
-
+ 
 cron.schedule('*/15 * * * * *', function(){
   console.log('uploading the data at ' + Date.now());
   database.ref(masterData).once('value').then(function(snapshot) {
