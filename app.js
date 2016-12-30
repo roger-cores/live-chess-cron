@@ -108,6 +108,7 @@ var parsePgn = function(pgn){
     var result = pgn.split('');
     pgn = pgn.replace(pgn.substring(open, close+1), "");
     //console.log(pgn);
+    console.log("here in while");
   }
   return pgn;
 }
@@ -132,7 +133,7 @@ var updatePgn = function(tournamentKey, roundKey, pgnUrl){
 
 
 
- 
+
 cron.schedule('*/15 * * * * *', function(){
   console.log('uploading the data at ' + Date.now());
   database.ref(masterData).once('value').then(function(snapshot) {
