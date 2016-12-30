@@ -123,9 +123,9 @@ var updatePgn = function(tournamentKey, roundKey, pgnUrl){
       response.on('end', function() {
           // while(body.includes('{'))
           //     body = body.replace(/{.*}/, '');
-          console.log(body.replace(/\s*{.*?}\s*/g, ' '));
-
-          body = parsePgn(body);
+          //console.log(body.replace(/\s*{.*?}\s*/g, ' '));
+          body = body.replace(/\s*{.*?}\s*/g, ' ');
+          //body = parsePgn(body);
           firebase.database().ref(masterData + '/' + tournamentKey + '/rounds/' + roundKey + '/' + 'pgn').set(body);
           console.log("update done");
       });
