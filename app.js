@@ -145,7 +145,15 @@ cron.schedule('*/15 * * * * *', function(){
       for(var roundKey in tournament.rounds){
         var round = tournament.rounds[roundKey];
         if(round.publish === true){
-          var pgnUrl = tournament.base_url + '/' + tournament.tournamentAddress + '/' + round.roundAddress + '/games.pgn';
+          console.log(tournament.name);
+          console.log(round.name);
+          var pgnUrl = "";
+          if(round.roundUrl && round.roundUrl != " "){
+            pgnUrl = round.roundUrl;
+          } else {
+            pgnUrl = tournament.base_url + '/' + tournament.tournamentAddress + '/' + round.roundAddress + '/games.pgn';
+          }
+          //pgnUrl = tournament.base_url + '/' + tournament.tournamentAddress + '/' + round.roundAddress + '/games.pgn';
           console.log(pgnUrl);
           updatePgn(tournamentKey, roundKey, pgnUrl);
 
