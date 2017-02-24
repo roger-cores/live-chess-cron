@@ -49,8 +49,14 @@ app.get('/', function(req, res, next){
       var tournament = snapshot.val()[tournamentKey];
       for(var roundKey in tournament.rounds){
         var round = tournament.rounds[roundKey];
+        console.log(round);
         if(round.publish === true){
-          var pgnUrl = tournament.base_url + '/' + tournament.tournamentAddress + '/' + round.roundAddress + '/games.pgn';
+          var pgnUrl = "";
+          if(round.roundUrl != ""){
+            pgnUrl = round.roundUrl;
+          } else {
+            pgnUrl = tournament.base_url + '/' + tournament.tournamentAddress + '/' + round.roundAddress + '/games.pgn';
+          }
           console.log(pgnUrl);
           updatePgn(tournamentKey, roundKey, pgnUrl);
 
@@ -131,6 +137,8 @@ var updatePgn = function(tournamentKey, roundKey, pgnUrl){
           firebase.database().ref(masterData + '/' + tournamentKey + '/rounds/' + roundKey + '/' + 'pgn').set(body);
           console.log("update done");
       });
+  }).on('error', function(err){
+    console.log(err);
   });
 }
 
@@ -145,7 +153,15 @@ cron.schedule('*/15 * * * * *', function(){
       for(var roundKey in tournament.rounds){
         var round = tournament.rounds[roundKey];
         if(round.publish === true){
-          var pgnUrl = tournament.base_url + '/' + tournament.tournamentAddress + '/' + round.roundAddress + '/games.pgn';
+          console.log(tournament.name);
+          console.log(round.name);
+          var pgnUrl = "";
+          if(round.roundUrl && round.roundUrl != " "){
+            pgnUrl = round.roundUrl;
+          } else {
+            pgnUrl = tournament.base_url + '/' + tournament.tournamentAddress + '/' + round.roundAddress + '/games.pgn';
+          }
+          //pgnUrl = tournament.base_url + '/' + tournament.tournamentAddress + '/' + round.roundAddress + '/games.pgn';
           console.log(pgnUrl);
           updatePgn(tournamentKey, roundKey, pgnUrl);
 
